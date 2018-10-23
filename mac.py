@@ -17,7 +17,10 @@ if len(sys.argv) < 2:
 
 
 
-######  getting vendor data from the file
+###
+###  getting vendor data from the registry file
+###  In the decitionarary variable vendor part of mac is used as key
+###
 vendormacs = {}
 
 try:
@@ -42,23 +45,25 @@ macfile.close()
 
 
 
-###Is there filename provided or hostname? assuming filename first
-
+### 
+### Is there filename provided or hostname? assuming filename first
+###
 withdevice = False
+
 try:
     macfile = open(sys.argv[1] , "r")
 except IOError as e:
-    print "I/O error while reading {0}: {1}".format(sys.argv[1], e.strerror)
-    print ("Can't open a file, trying device instead")
+    #print "I/O error while reading {0}: {1}".format(sys.argv[1], e.strerror)
+    print "Can't open a file ({0}), trying device instead".format(e.strerror)
     withdevice = True
 
 
 
 
-##### We need two arrays like variable to store mac data
+### We need two arrays like variables to store mac data
 
-decimalmacs  = []   ##### first one is list of macs in decimal value for sorting purposes
-devicemacs   = {}   ##### and second one is a dictionary containing hex values where keys are the same as in list above
+decimalmacs  = []   ### first one is list of macs in decimal value for sorting purposes
+devicemacs   = {}   ### and second one is a dictionary containing hex values where keys are the same as in list above
 
 
 
@@ -67,7 +72,7 @@ if withdevice:
     ### current user is used to connect
     password = getpass.getpass("Please enter the password to connect to the device: ")
     router  = Device(host=sys.argv[1], password=password)
-    print "Connecting to the device"
+    print "Connecting to the device..."
 
     try:
         router.open(gather_facts = False)
@@ -92,7 +97,7 @@ if withdevice:
     router.close()
 
 
-else:   ### Opening file
+else:
 
 ######## getting mac data from file
 ######## assuming colonseparated data : mac,data
@@ -102,7 +107,6 @@ else:   ### Opening file
         macline = line.split(',')
         mac     = macline[0].replace(":","")
 
-        #print macline[0], macline[1], macline[2]
         macdecimal = int(mac,16)
 
         if macdecimal in decimalmacs:
@@ -112,19 +116,18 @@ else:   ### Opening file
             decimalmacs.append(macdecimal)
             devicemacs[macdecimal]= {}
             devicemacs[macdecimal]['hexmac']=mac.upper()
-            #print devicemacs[macdecimal], macline[0].replace(":",""), macdecimal
 
 
     macfile.close()
 
+
 print len(decimalmacs) , " unique MACs found"
-### sorting
 decimalmacs.sort()
- 
-
 print "removing potential same chassis MACs"
-### and try to count vendors
 
+
+
+### and try to count vendors
 vendorsummary = {}
 
 i = 0;
@@ -167,5 +170,4 @@ for vendor in sorted_vendors:
     print ("{0:40s}  {1:>9d} {2:>8.2f}%").format(vendor[0], vendor[1], percent)
 
 exit()
-
 
