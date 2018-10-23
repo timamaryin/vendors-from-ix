@@ -4,6 +4,8 @@
 from jnpr.junos import Device
 from jnpr.junos.exception import *          # Various exceptions
 import sys                                  # for command line arguments
+import getpass                              # in order to get password without echo
+
 
 
 import operator   # for dict sorting
@@ -15,9 +17,6 @@ if len(sys.argv) < 2:
     print "Usage: ", sys.argv[0], " file/device"
     print "Script either opens the file or connects to the device"
     exit(0)
-
-
-deneb  = Device(user = 'labroot', host='deneb.csim-emea.jnpr.net', password='lab123')
 
 
 
@@ -67,18 +66,21 @@ devicemacs   = {}   ##### and second one is a dictionary containing hex values w
 
 
 if withdevice:
-    deneb  = Device(user = 'labroot', host=sys.argv[1], password='lab123')
+
+    ### current user is used to connect
+    password = getpass.getpass("Please enter the password to connect to the device: ")
+    router  = Device(host=sys.argv[1], password=password)
     print "Connecting to the device"
 
     try:
-        deneb.open(gather_facts = False)
+        router.open(gather_facts = False)
     except ConnectError as error:
         print 'Unable to connect to ' , sys.argv[1] , error
         exit()
 
-    deneb.timeout=25000
+    router.timeout=25000
 
-    arps = deneb.rpc.get_arp_table_information(no_resolve = True)
+    arps = router.rpc.get_arp_table_information(no_resolve = True)
     for arp in arps.xpath('//arp-table-entry'):
         mac = ((arp[0].text.strip()).replace(":","")).upper()
         macdecimal = int(mac,16)
@@ -90,7 +92,7 @@ if withdevice:
             devicemacs[macdecimal]= {}
             devicemacs[macdecimal]['hexmac'] = mac
 
-    deneb.close()
+    router.close()
 
 
 else:   ### Opening file
