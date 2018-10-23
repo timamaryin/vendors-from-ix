@@ -7,9 +7,9 @@ In order to determine vendor to MAC relationship public registry is used https:/
 For simplicity oui.csv from that web-site is provided as part of this repository.
 
 
-#Usage
+# Usage
 
-Is it assumed that python is installed and available 
+### Is it assumed that python is installed and available 
 
 ./mac.py (device | filename)
 
