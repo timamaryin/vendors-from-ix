@@ -1,10 +1,10 @@
-# Device/router vendors from internet exchange
+# Device vendor statistics from internet exchange
 
 ## Description
 The idea of this script is to display router/device vendor statistics from an Internet exchange.
 This is done by connecting to a (Juniper) device and pulling MAC data or analyzing a file with MAC data.
 
-In order to determine vendor to MAC relationship [public registry](https://regauth.standards.ieee.org/standards-ra-web/pub/view.html#registries) is used
+In order to determine vendor to MAC relationship [public registry](https://regauth.standards.ieee.org/standards-ra-web/pub/view.html#registries) is used.
 For simplicity oui.csv from that web-site is provided as part of this repository.
 
 
