@@ -1,14 +1,11 @@
 #!/usr/bin/env python
 
 
-from jnpr.junos import Device
+from jnpr.junos import Device               # PyEZ to connect to juniper device
 from jnpr.junos.exception import *          # Various exceptions
 import sys                                  # for command line arguments
 import getpass                              # in order to get password without echo
-
-
-
-import operator   # for dict sorting
+import operator                             # for dict sorting
 
 
 
