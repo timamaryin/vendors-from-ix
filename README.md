@@ -9,8 +9,10 @@ For simplicity oui.csv from that web-site is provided as part of this repository
 
 
 ## Requirements
-If filename is provided to the script as a parameter than comma separated text file is assumed with one MAC address per line:
-aa:bb:cc:11:22:33,something
+If the filename is provided to the script as a parameter than text file is assumed with one MAC address per line in "show arp" style:
+
+aa:bb:bb:11:22:33 10.20.30.40      hostname    xe-1/1/0
+
 
 In order to connect to a Juniper router netconf/ssh is used with PyEZ library
 It should be installed, more info [here](https://github.com/Juniper/py-junos-eznc)

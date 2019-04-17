@@ -142,7 +142,7 @@ else:
 
         if macdecimal in decimalmacs:
             # Don't add dupes
-            print "Dup?", mac
+            #print "Dup?", mac
             continue
         else:
             decimalmacs.append(macdecimal)
