@@ -22,10 +22,13 @@ oui.csv file mentioned in the description should be there in the same directory 
 ## Usage
 
 
-./mac.py (device | filename)
+./mac.py (device | filename) user interface
 
 
-script takes one parameter assuming it is either filename or device.
-First it tries to open a file if that fails connects to device assuming hostname is provided.
+script takes at least one parameter assuming it is either filename or device.
+Other two parameters are optional.
+
+First script tries to open a file if that fails connects to device assuming hostname is provided.
+If user is not specified then current unix user is used to connect to a device
 
 
