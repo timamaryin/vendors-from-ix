@@ -11,11 +11,15 @@ import operator                             # for dict sorting
 
 
 if len(sys.argv) < 2:
-    print "Usage: ", sys.argv[0], " file/device"
+    print
+    print "Usage: ", sys.argv[0], " file/device username interface"
     print "Script either opens the file or connects to the device"
+    print
     exit(0)
 
 
+
+    
 
 ###
 ###  getting vendor data from the registry file
@@ -35,10 +39,8 @@ for line in macfile:
     vendorline = line.split(',')
     if '"' in vendorline[2]:
         subvendorline = line.split('"')
-        #print vendorline[1] , subvendorline[1]
         vendormacs[vendorline[1]] = subvendorline[1]
     else:
-        #print vendorline[1], vendorline[2]
         vendormacs[vendorline[1]] = vendorline[2]
 
 macfile.close()
@@ -66,12 +68,30 @@ decimalmacs  = []   ### first one is list of macs in decimal value for sorting p
 devicemacs   = {}   ### and second one is a dictionary containing hex values where keys are the same as in list above
 
 
+### Is there interface specified as parameter?
+intspecified = False
+
+# let us fetch username if provided
+routerlogin = getpass.getuser()
+if len(sys.argv) == 2:
+    print "No user provided so assuming current one: ", routerlogin
+
+if len(sys.argv) >= 3:
+    routerlogin = sys.argv[2]
+    print "Logging into router as: ", sys.argv[2]
+
+if len(sys.argv) == 4:
+    intspecified = True
+    print "using interface specified ", sys.argv[3]
+    interface = sys.argv[3]
+
+
 
 if withdevice:
 
     ### current user is used to connect
     password = getpass.getpass("Please enter the password to connect to the device: ")
-    router  = Device(host=sys.argv[1], password=password)
+    router  = Device(host=sys.argv[1], user=routerlogin, password=password)
     print "Connecting to the device..."
 
     try:
@@ -100,17 +120,29 @@ if withdevice:
 else:
 
 ######## getting mac data from file
-######## assuming colonseparated data : mac,data
-######## aa:bb:cc:11:22:33,something
+######## assuming colonseparated data : mac data
+######## aa:bb:cc:dd:aa:bb 192.168.1.1    ae100.0                  none
 
     for line in macfile:
-        macline = line.split(',')
+        if (line.count(":") < 5):
+            continue   # let's filter some garbage
+
+        macline = line.split()
+
+        if (intspecified):   # here we check if mac is from interface of interest
+            if (interface != macline[2]):
+                # If it's not we skip it
+                continue
+
+
+
         mac     = macline[0].replace(":","")
 
         macdecimal = int(mac,16)
 
         if macdecimal in decimalmacs:
             # Don't add dupes
+            print "Dup?", mac
             continue
         else:
             decimalmacs.append(macdecimal)
